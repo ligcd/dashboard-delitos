@@ -3,33 +3,31 @@ import { useState } from "react";
 // SUBIR ARCHIVOS
 import FileUploader from "./components/FileUploader";
 
-// COMPONENTES EXCEL
+// EXCEL
 import { processExcel } from "./services/excel/excelService";
 import { exportExcel } from "./services/excel/exportExcel";
 
-// COMPONENTES DASHBOARD
+// DASHBOARD
 import DashboardSummary from "./components/dashboard/DashboardSummary";
 import DashboardFilters from "./components/dashboard/DashboardFilters";
-import MunicipalityTable from "./components/dashboard/tables/MunicipalityTable";
-import CrimeTable from "./components/dashboard/tables/CrimeTable";
+import ChartsSection from "./components/dashboard/ChartsSection";
+import TablesSection from "./components/dashboard/TablesSection";
 
 // LAYOUT
 import MainLayout from "./components/layout/MainLayout";
 import Card from "./components/layout/Card";
 
-// SERVICIOS
+// FILTROS
 import { filterRecords } from "./services/stats/filterRecords";
 
-import {
-    getDailyStats,
-    getMonthlyTrend,
-    getCumulativeTrend
-} from "./services/stats/statisticsEngine";
+import ChartsDashboard from "./components/dashboard/charts/ChartsDashboard";
 
 function App() {
 
     const [fileName, setFileName] = useState("");
+
     const [sheetNames, setSheetNames] = useState([]);
+
     const [records, setRecords] = useState([]);
 
     const [filters, setFilters] = useState({
@@ -37,24 +35,28 @@ function App() {
         mode: "range",
 
         startDate: "",
+
         endDate: "",
 
         year: "",
+
         month: "",
 
         region: "TODOS",
+
         municipio: "TODOS",
-        delito: "TODOS"
+
+        delito: "TOTAL"
 
     });
 
-    const filteredRecords = filterRecords(records, filters);
+    const filteredRecords = filterRecords(
 
-    const [stats, setStats] = useState({
-        daily: [],
-        monthly: [],
-        cumulative: []
-    });
+        records,
+
+        filters
+
+    );
 
     async function handleFile(file) {
 
@@ -62,16 +64,9 @@ function App() {
 
         const result = await processExcel(file);
 
-        const data = result.records || [];
+        setRecords(result.records || []);
 
-        setRecords(data);
         setSheetNames(result.sheetNames || []);
-
-        setStats({
-            daily: getDailyStats(data),
-            monthly: getMonthlyTrend(data),
-            cumulative: getCumulativeTrend(data)
-        });
 
     }
 
@@ -79,7 +74,7 @@ function App() {
 
         <MainLayout>
 
-            {/* CARGA DEL ARCHIVO */}
+            {/* CARGAR ARCHIVO */}
 
             <Card>
 
@@ -89,11 +84,15 @@ function App() {
 
                 </h2>
 
-                <FileUploader onFileSelect={handleFile} />
+                <FileUploader
+
+                    onFileSelect={handleFile}
+
+                />
 
             </Card>
 
-            {/* INFORMACIÓN DEL ARCHIVO */}
+            {/* INFORMACIÓN */}
 
             <Card>
 
@@ -125,11 +124,19 @@ function App() {
 
                         <ul className="mt-2 list-disc pl-5 text-slate-600">
 
-                            {sheetNames.map(sheet => (
+                            {
 
-                                <li key={sheet}>{sheet}</li>
+                                sheetNames.map(sheet => (
 
-                            ))}
+                                    <li key={sheet}>
+
+                                        {sheet}
+
+                                    </li>
+
+                                ))
+
+                            }
 
                         </ul>
 
@@ -139,27 +146,39 @@ function App() {
 
             </Card>
 
-            {/* FILTROS + KPIs */}
+            {/* FILTROS */}
 
             <Card>
 
                 <DashboardFilters
 
                     records={records}
+
                     filters={filters}
+
                     setFilters={setFilters}
-
-                />
-
-                <DashboardSummary
-
-                    records={filteredRecords}
 
                 />
 
             </Card>
 
-            {/* BOTÓN EXPORTAR */}
+            {/* KPIs */}
+
+            <DashboardSummary
+
+                records={filteredRecords}
+
+            />
+
+            {/* GRÁFICAS */}
+
+            <ChartsSection
+
+                records={filteredRecords}
+
+            />
+
+            {/* EXPORTAR */}
 
             <div className="flex justify-end">
 
@@ -167,19 +186,7 @@ function App() {
 
                     onClick={() => exportExcel(filteredRecords)}
 
-                    className="
-                        rounded-xl
-                        bg-[#E47021]
-                        px-6
-                        py-3
-                        font-semibold
-                        text-white
-                        shadow
-                        transition-all
-                        duration-300
-                        hover:bg-[#c65f16]
-                        hover:shadow-lg
-                    "
+                    className="rounded-xl bg-[#E47021] px-6 py-3 font-semibold text-white shadow transition-all duration-300 hover:bg-[#c65f16] hover:shadow-lg"
 
                 >
 
@@ -191,29 +198,11 @@ function App() {
 
             {/* TABLAS */}
 
-            <div className="grid gap-6 lg:grid-cols-2">
+            <TablesSection
 
-                <Card>
+                records={filteredRecords}
 
-                    <MunicipalityTable
-
-                        records={filteredRecords}
-
-                    />
-
-                </Card>
-
-                <Card>
-
-                    <CrimeTable
-
-                        records={filteredRecords}
-
-                    />
-
-                </Card>
-
-            </div>
+            />
 
         </MainLayout>
 

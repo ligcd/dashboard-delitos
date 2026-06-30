@@ -40,7 +40,6 @@ export function getDelitos(records) {
 
     return [
 
-        "TODOS",
 
         ...new Set(
             records.map(r => r.delito)

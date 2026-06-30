@@ -79,12 +79,11 @@ export function filterRecords(records, filters) {
         // DELITO
         // ===========================
 
-        if (
-            filters.delito !== "TODOS" &&
-            record.delito !== filters.delito
-        ) {
-            return false;
-        }
+            if (record.delito !== filters.delito) {
+                return false;
+            }
+
+
 
         return true;
 

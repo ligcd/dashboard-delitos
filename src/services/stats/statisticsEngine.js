@@ -3,6 +3,14 @@
 /**
  * Convierte fecha a objeto Date seguro
  */
+
+function clean(records) {
+    return records.filter(r =>
+        r.delito &&
+        r.delito !== "TOTAL"
+    );
+}
+
 function parseDate(dateStr) {
     return new Date(dateStr);
 }

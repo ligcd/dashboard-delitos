@@ -1,76 +1,76 @@
 import KPICard from "./cards/KPICard";
 
+import {
+
+    getTotalIncidencias,
+    getTopMunicipio,
+    getTopRegion,
+    getDailyAverage
+
+} from "../../services/stats/kpiEngine";
+
 export default function DashboardSummary({ records }) {
 
-    // Total de incidencias
-    const total = records.reduce(
-        (sum, r) => sum + Number(r.cantidad || 0),
-        0
-    );
+    const total = getTotalIncidencias(records);
 
-    // Delito con mayor incidencia
-    const crimeMap = {};
+    const topMunicipio = getTopMunicipio(records);
 
-    for (const r of records) {
-        crimeMap[r.delito] =
-            (crimeMap[r.delito] || 0) + Number(r.cantidad || 0);
-    }
+    const topRegion = getTopRegion(records);
 
-    const topCrime = Object.entries(crimeMap)
-        .sort((a, b) => b[1] - a[1])[0];
-
-    // Municipio con mayor incidencia
-    const muniMap = {};
-
-    for (const r of records) {
-        muniMap[r.municipio] =
-            (muniMap[r.municipio] || 0) + Number(r.cantidad || 0);
-    }
-
-    const topMunicipio = Object.entries(muniMap)
-        .sort((a, b) => b[1] - a[1])[0];
-
-    // Formato de datos
-    const totalRecords = records.length.toLocaleString("es-MX");
-    const totalIncidencia = total.toLocaleString("es-MX");
-
-    const topCrimeName = topCrime?.[0] || "Sin datos";
-    const topCrimeValue = (topCrime?.[1] || 0).toLocaleString("es-MX");
-
-    const topMunicipioName = topMunicipio?.[0] || "Sin datos";
-    const topMunicipioValue = (topMunicipio?.[1] || 0).toLocaleString("es-MX");
+    const promedio = getDailyAverage(records);
 
     return (
 
         <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 
             <KPICard
-                title="Registros procesados"
-                value={totalRecords}
-                subtitle="Registros cargados"
-                icon="📄"
-            />
 
-            <KPICard
                 title="Incidencia delictiva"
-                value={totalIncidencia}
+
+                value={total.toLocaleString("es-MX")}
+
                 subtitle="Total de incidencias"
+
                 icon="📊"
+
                 color="#E47021"
+
             />
 
             <KPICard
-                title="Delito con mayor incidencia"
-                value={topCrimeName}
-                subtitle={`${topCrimeValue} incidencias`}
-                icon="🚨"
-            />
 
-            <KPICard
                 title="Municipio con mayor incidencia"
-                value={topMunicipioName}
-                subtitle={`${topMunicipioValue} incidencias`}
+
+                value={topMunicipio?.[0] || "-"}
+
+                subtitle={`${(topMunicipio?.[1] || 0).toLocaleString("es-MX")} incidencias`}
+
                 icon="🏙"
+
+            />
+
+            <KPICard
+
+                title="Región con mayor incidencia"
+
+                value={topRegion?.[0] || "-"}
+
+                subtitle={`${(topRegion?.[1] || 0).toLocaleString("es-MX")} incidencias`}
+
+                icon="🗺"
+
+            />
+
+            <KPICard
+
+                title="Promedio diario"
+
+                value={Math.round(promedio).toLocaleString("es-MX")}
+
+                subtitle="Incidencias por día"
+
+                icon="📈"
+
             />
 
         </div>
