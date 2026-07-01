@@ -1,39 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-// SUBIR ARCHIVOS
 import FileUploader from "./components/FileUploader";
 
-// EXCEL
 import { processExcel } from "./services/excel/excelService";
 import { exportExcel } from "./services/excel/exportExcel";
 
-// DASHBOARD
 import DashboardSummary from "./components/dashboard/DashboardSummary";
 import DashboardFilters from "./components/dashboard/DashboardFilters";
 import ChartsSection from "./components/dashboard/ChartsSection";
 import TablesSection from "./components/dashboard/TablesSection";
 import WeekInfo from "./components/dashboard/WeekInfo";
 
-// LAYOUT
 import MainLayout from "./components/layout/MainLayout";
 import Card from "./components/layout/Card";
 
-// FILTROS
 import { filterRecords } from "./services/stats/filterRecords";
 
 function App() {
 
     const [fileName, setFileName] = useState("");
-
     const [sheetNames, setSheetNames] = useState([]);
-
     const [records, setRecords] = useState([]);
 
-    // Tipo de comparación
+    // Comparación seleccionada
     const [comparison, setComparison] = useState("previousMonth");
 
+    // Filtros
     const [filters, setFilters] = useState({
-
         mode: "range",
 
         startDate: "",
@@ -46,15 +39,36 @@ function App() {
         region: "TODOS",
         municipio: "TODOS",
         delito: "TOTAL"
-
     });
 
-    const filteredRecords = filterRecords(
+    // 🔥 Cambiar automáticamente la comparación según el modo
+    useEffect(() => {
 
-        records,
-        filters
+        switch (filters.mode) {
 
-    );
+            case "month":
+                setComparison("previousMonth");
+                break;
+
+            case "week":
+                setComparison("previousWeek");
+                break;
+
+            case "year":
+                setComparison("previousYear");
+                break;
+
+            case "range":
+                setComparison("previousPeriod");
+                break;
+
+            default:
+                break;
+        }
+
+    }, [filters.mode]);
+
+    const filteredRecords = filterRecords(records, filters);
 
     async function handleFile(file) {
 
@@ -62,10 +76,9 @@ function App() {
 
         const result = await processExcel(file);
 
+        console.log("PRIMER REGISTRO:", result.records[0]);
+
         setRecords(result.records || []);
-
-        console.log(result.records[0]);
-
         setSheetNames(result.sheetNames || []);
 
     }
@@ -74,29 +87,15 @@ function App() {
 
         <MainLayout>
 
-            {/* ========================= */}
-            {/* CARGAR ARCHIVO */}
-            {/* ========================= */}
-
             <Card>
 
                 <h2 className="mb-4 text-xl font-semibold text-[#032236]">
-
                     Cargar archivo
-
                 </h2>
 
-                <FileUploader
-
-                    onFileSelect={handleFile}
-
-                />
+                <FileUploader onFileSelect={handleFile} />
 
             </Card>
-
-            {/* ========================= */}
-            {/* INFORMACIÓN */}
-            {/* ========================= */}
 
             <Card>
 
@@ -104,43 +103,29 @@ function App() {
 
                     <div>
 
-                        <h3 className="font-semibold text-[#032236]">
-
-                            Archivo seleccionado
-
+                        <h3 className="font-semibold">
+                            Archivo
                         </h3>
 
-                        <p className="mt-2 text-slate-600">
-
-                            {fileName || "Ninguno"}
-
-                        </p>
+                        <p>{fileName || "Ninguno"}</p>
 
                     </div>
 
                     <div>
 
-                        <h3 className="font-semibold text-[#032236]">
-
-                            Hojas encontradas
-
+                        <h3 className="font-semibold">
+                            Hojas
                         </h3>
 
-                        <ul className="mt-2 list-disc pl-5 text-slate-600">
+                        <ul>
 
-                            {
+                            {sheetNames.map(sheet => (
 
-                                sheetNames.map(sheet => (
+                                <li key={sheet}>
+                                    {sheet}
+                                </li>
 
-                                    <li key={sheet}>
-
-                                        {sheet}
-
-                                    </li>
-
-                                ))
-
-                            }
+                            ))}
 
                         </ul>
 
@@ -150,91 +135,42 @@ function App() {
 
             </Card>
 
-            {/* ========================= */}
-            {/* FILTROS */}
-            {/* ========================= */}
-
             <Card>
 
                 <DashboardFilters
-
                     records={records}
-
                     filters={filters}
-
                     setFilters={setFilters}
-
                 />
 
             </Card>
 
-            {/* ========================= */}
-            {/* INFORMACIÓN DE SEMANA */}
-            {/* ========================= */}
+            <DashboardSummary records={filteredRecords} />
 
-            <WeekInfo
+            <WeekInfo filters={filters} />
 
+            <TablesSection
+                records={records}
+                filteredRecords={filteredRecords}
                 filters={filters}
-
+                comparison={comparison}
+                setComparison={setComparison}
             />
-
-            {/* ========================= */}
-            {/* KPIs */}
-            {/* ========================= */}
-
-            <DashboardSummary
-
-                records={filteredRecords}
-
-            />
-
-            {/* ========================= */}
-            {/* GRÁFICAS */}
-            {/* ========================= */}
 
             <ChartsSection
-
                 records={filteredRecords}
-
             />
-
-            {/* ========================= */}
-            {/* EXPORTAR */}
-            {/* ========================= */}
 
             <div className="flex justify-end">
 
                 <button
-
                     onClick={() => exportExcel(filteredRecords)}
-
-                    className="rounded-xl bg-[#E47021] px-6 py-3 font-semibold text-white shadow transition-all duration-300 hover:bg-[#c65f16] hover:shadow-lg"
-
+                    className="rounded-xl bg-[#E47021] px-6 py-3 text-white"
                 >
-
-                    📥 Descargar Excel limpio
-
+                    📥 Exportar Excel
                 </button>
 
             </div>
-
-            {/* ========================= */}
-            {/* TABLAS */}
-            {/* ========================= */}
-
-            <TablesSection
-
-                records={records}
-
-                filteredRecords={filteredRecords}
-
-                filters={filters}
-
-                comparison={comparison}
-
-                setComparison={setComparison}
-
-            />
 
         </MainLayout>
 

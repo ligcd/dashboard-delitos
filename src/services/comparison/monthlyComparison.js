@@ -1,78 +1,27 @@
-import { filterComparisonRecords } from "./filterComparisonRecords";
-
 import { getMonthRecords } from "../../utils/dateUtils";
+import { comparePeriods } from "../stats/comparisons";
 
-import {
-    comparePeriods
-} from "../stats/comparisons";
+export function getMonthlyComparison(records, filters, comparisonType) {
 
-export function getMonthlyComparison(
-    records,
-    filters,
-    comparisonType
-) {
+    if (!filters.year || !filters.month) return [];
 
-    if (!filters.year || !filters.month) {
-
-        return [];
-
-    }
-
-    const baseRecords = filterComparisonRecords(
-        records,
-        filters
-    );
-
-    let previousMonth = Number(filters.month);
-    let previousYear = Number(filters.year);
+    let prevMonth = Number(filters.month);
+    let prevYear = Number(filters.year);
 
     if (comparisonType === "previousMonth") {
-
-        previousMonth--;
-
-        if (previousMonth === 0) {
-
-            previousMonth = 12;
-            previousYear--;
-
+        prevMonth--;
+        if (prevMonth === 0) {
+            prevMonth = 12;
+            prevYear--;
         }
-
     }
 
     if (comparisonType === "sameMonthLastYear") {
-
-        previousYear--;
-
+        prevYear--;
     }
 
-    const previousRecords = getMonthRecords(
+    const previous = getMonthRecords(records, prevYear, prevMonth);
+    const current = getMonthRecords(records, filters.year, filters.month);
 
-        baseRecords,
-
-        previousYear,
-
-        previousMonth
-
-    );
-
-    const currentRecords = getMonthRecords(
-
-        baseRecords,
-
-        filters.year,
-
-        filters.month
-
-    );
-
-    return comparePeriods(
-
-        previousRecords,
-
-        currentRecords,
-
-        "delito"
-
-    );
-
+    return comparePeriods(previous, current, "delito");
 }

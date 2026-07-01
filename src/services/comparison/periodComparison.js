@@ -1,27 +1,9 @@
 import { comparePeriods } from "../stats/comparisons";
 
-export function getPeriodComparison(
+export function getPeriodComparison(records, filters) {
 
-    records,
-
-    filters,
-
-    comparisonType
-
-) {
-
-    /*
-        Aquí construiremos el motor para:
-
-        - rango anterior
-        - mismo rango año anterior
-
-        Como depende del número exacto de días
-        del rango seleccionado, por ahora
-        regresamos un arreglo vacío.
-
-    */
+    // FUTURO: rango dinámico
+    // Por ahora usamos todo el rango filtrado
 
     return [];
-
 }

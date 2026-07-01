@@ -14,11 +14,11 @@ export default function ComparisonTable({
     const getLabels = () => {
         switch (mode) {
 
-            case "month":
-                return ["Mes anterior", "Mes actual"];
-
             case "week":
                 return ["Semana anterior", "Semana actual"];
+
+            case "month":
+                return ["Mes anterior", "Mes actual"];
 
             case "year":
                 return ["Año anterior", "Año actual"];
@@ -108,8 +108,8 @@ export default function ComparisonTable({
                                         <span
                                             className={
                                                 positive
-                                                    ? "rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700"
-                                                    : "rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700"
+                                                    ? "rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700"
+                                                    : "rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700"
                                             }
                                         >
 
