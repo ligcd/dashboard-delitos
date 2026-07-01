@@ -1,11 +1,13 @@
-
 import {
     normalizeDate,
     getYear,
     getMonth,
-    getDay
+    getDay,
+    getWeekNumber,
+    getDayName,
+    getWeekStart,
+    getWeekEnd
 } from "../../utils/dateUtils";
-
 
 export function transformToRecords(data, sheetName, analysis) {
 
@@ -46,6 +48,14 @@ export function transformToRecords(data, sheetName, analysis) {
                 mes: getMonth(column.date),
 
                 dia: getDay(column.date),
+
+                semana: getWeekNumber(column.date),
+
+                diaSemana: getDayName(column.date),
+
+                inicioSemana: getWeekStart(column.date),
+
+                finSemana: getWeekEnd(column.date),
 
                 cantidad
 

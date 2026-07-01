@@ -53,6 +53,32 @@ export function filterRecords(records, filters) {
 
         }
 
+        else if (filters.mode === "week") {
+
+            if (
+
+                filters.year &&
+                record.anio !== Number(filters.year)
+
+            ) {
+
+                return false;
+
+            }
+
+            if (
+
+                filters.week &&
+                record.semana !== Number(filters.week)
+
+            ) {
+
+                return false;
+
+            }
+
+        }
+
         // ===========================
         // REGIÓN
         // ===========================
@@ -79,9 +105,16 @@ export function filterRecords(records, filters) {
         // DELITO
         // ===========================
 
-            if (record.delito !== filters.delito) {
-                return false;
-            }
+        if (
+
+            filters.delito &&
+            record.delito !== filters.delito
+
+        ) {
+
+            return false;
+
+        }
 
 
 

@@ -1,3 +1,5 @@
+//Reutilizable (Diseño para todas las estadísticas)
+
 export default function ChartCard({ title, subtitle, children }) {
     return (
         <div className="rounded-2xl border bg-white p-5 shadow-sm">
@@ -16,7 +18,7 @@ export default function ChartCard({ title, subtitle, children }) {
             </div>
 
             {/* CHART */}
-            <div className="h-[300px]">
+            <div className="h-[350px]">
                 {children}
             </div>
 

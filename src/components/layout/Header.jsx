@@ -16,8 +16,7 @@ export default function Header() {
 
                     <p className="mt-1 text-slate-300">
 
-                        Fiscalía del Estado de Jalisco
-
+                        Consejo Estatal de Seguridad Pública
                     </p>
 
                 </div>

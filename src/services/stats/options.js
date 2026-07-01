@@ -40,7 +40,6 @@ export function getDelitos(records) {
 
     return [
 
-
         ...new Set(
             records.map(r => r.delito)
         )
@@ -49,7 +48,7 @@ export function getDelitos(records) {
 
 }
 
-export function getYears(records){
+export function getYears(records) {
 
     return [
 
@@ -61,23 +60,43 @@ export function getYears(records){
 
 }
 
-export function getMonths(){
+export function getMonths() {
 
     return [
 
-        { value:1,label:"Enero"},
-        { value:2,label:"Febrero"},
-        { value:3,label:"Marzo"},
-        { value:4,label:"Abril"},
-        { value:5,label:"Mayo"},
-        { value:6,label:"Junio"},
-        { value:7,label:"Julio"},
-        { value:8,label:"Agosto"},
-        { value:9,label:"Septiembre"},
-        { value:10,label:"Octubre"},
-        { value:11,label:"Noviembre"},
-        { value:12,label:"Diciembre"}
+        { value: 1, label: "Enero" },
+        { value: 2, label: "Febrero" },
+        { value: 3, label: "Marzo" },
+        { value: 4, label: "Abril" },
+        { value: 5, label: "Mayo" },
+        { value: 6, label: "Junio" },
+        { value: 7, label: "Julio" },
+        { value: 8, label: "Agosto" },
+        { value: 9, label: "Septiembre" },
+        { value: 10, label: "Octubre" },
+        { value: 11, label: "Noviembre" },
+        { value: 12, label: "Diciembre" }
 
     ];
+
+}
+
+export function getWeeks(records, year = "") {
+
+    let data = records;
+
+    if (year) {
+
+        data = data.filter(r => r.anio === Number(year));
+
+    }
+
+    return [
+
+        ...new Set(
+            data.map(r => r.semana)
+        )
+
+    ].sort((a, b) => a - b);
 
 }

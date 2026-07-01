@@ -3,7 +3,8 @@ import {
     getMunicipios,
     getDelitos,
     getYears,
-    getMonths
+    getMonths,
+    getWeeks
 } from "../../services/stats/options";
 
 export default function DashboardFilters({
@@ -19,6 +20,7 @@ export default function DashboardFilters({
     const delitos = getDelitos(records);
     const years = getYears(records);
     const months = getMonths();
+    const weeks = getWeeks(records, filters.year);
 
     function resetFilters() {
 
@@ -31,6 +33,7 @@ export default function DashboardFilters({
 
             year: "",
             month: "",
+            week: "",
 
             region: "TODOS",
             municipio: "TODOS",
@@ -142,6 +145,12 @@ export default function DashboardFilters({
                         <option value="month">
 
                             Mes
+
+                        </option>
+
+                        <option value="week">
+
+                            Semana
 
                         </option>
 
@@ -382,6 +391,135 @@ export default function DashboardFilters({
                                     </option>
 
                                 ))}
+
+                            </select>
+
+                        </div>
+
+                    </>
+
+                )}
+
+
+                {/* SEMANA */}
+
+                {filters.mode === "week" && (
+
+                    <>
+
+                        <div>
+
+                            <label className="mb-2 block text-sm font-semibold text-slate-700">
+
+                                Año
+
+                            </label>
+
+                            <select
+
+                                value={filters.year}
+
+                                onChange={(e) =>
+
+                                    setFilters({
+
+                                        ...filters,
+
+                                        year: e.target.value,
+
+                                        week: ""
+
+                                    })
+
+                                }
+
+                                className={inputStyle}
+
+                            >
+
+                                <option value="">
+
+                                    Seleccione
+
+                                </option>
+
+                                {
+
+                                    years.map(year => (
+
+                                        <option
+
+                                            key={year}
+
+                                            value={year}
+
+                                        >
+
+                                            {year}
+
+                                        </option>
+
+                                    ))
+
+                                }
+
+                            </select>
+
+                        </div>
+
+                        <div>
+
+                            <label className="mb-2 block text-sm font-semibold text-slate-700">
+
+                                Semana
+
+                            </label>
+
+                            <select
+
+                                value={filters.week}
+
+                                onChange={(e) =>
+
+                                    setFilters({
+
+                                        ...filters,
+
+                                        week: e.target.value
+
+                                    })
+
+                                }
+
+                                className={inputStyle}
+
+                            >
+
+                                <option value="">
+
+                                    Seleccione
+
+                                </option>
+
+                                {
+
+                                    weeks.map(week => (
+
+                                        <option
+
+                                            key={week}
+
+                                            value={week}
+
+                                        >
+
+                                            Semana {week}
+
+                                        </option>
+
+                                    ))
+
+                                }
 
                             </select>
 

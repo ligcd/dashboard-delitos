@@ -12,6 +12,7 @@ import DashboardSummary from "./components/dashboard/DashboardSummary";
 import DashboardFilters from "./components/dashboard/DashboardFilters";
 import ChartsSection from "./components/dashboard/ChartsSection";
 import TablesSection from "./components/dashboard/TablesSection";
+import WeekInfo from "./components/dashboard/WeekInfo";
 
 // LAYOUT
 import MainLayout from "./components/layout/MainLayout";
@@ -19,8 +20,6 @@ import Card from "./components/layout/Card";
 
 // FILTROS
 import { filterRecords } from "./services/stats/filterRecords";
-
-import ChartsDashboard from "./components/dashboard/charts/ChartsDashboard";
 
 function App() {
 
@@ -30,22 +29,22 @@ function App() {
 
     const [records, setRecords] = useState([]);
 
+    // Tipo de comparación
+    const [comparison, setComparison] = useState("previousMonth");
+
     const [filters, setFilters] = useState({
 
         mode: "range",
 
         startDate: "",
-
         endDate: "",
 
         year: "",
-
         month: "",
+        week: "",
 
         region: "TODOS",
-
         municipio: "TODOS",
-
         delito: "TOTAL"
 
     });
@@ -53,7 +52,6 @@ function App() {
     const filteredRecords = filterRecords(
 
         records,
-
         filters
 
     );
@@ -66,6 +64,8 @@ function App() {
 
         setRecords(result.records || []);
 
+        console.log(result.records[0]);
+
         setSheetNames(result.sheetNames || []);
 
     }
@@ -74,7 +74,9 @@ function App() {
 
         <MainLayout>
 
+            {/* ========================= */}
             {/* CARGAR ARCHIVO */}
+            {/* ========================= */}
 
             <Card>
 
@@ -92,7 +94,9 @@ function App() {
 
             </Card>
 
+            {/* ========================= */}
             {/* INFORMACIÓN */}
+            {/* ========================= */}
 
             <Card>
 
@@ -146,7 +150,9 @@ function App() {
 
             </Card>
 
+            {/* ========================= */}
             {/* FILTROS */}
+            {/* ========================= */}
 
             <Card>
 
@@ -162,7 +168,19 @@ function App() {
 
             </Card>
 
+            {/* ========================= */}
+            {/* INFORMACIÓN DE SEMANA */}
+            {/* ========================= */}
+
+            <WeekInfo
+
+                filters={filters}
+
+            />
+
+            {/* ========================= */}
             {/* KPIs */}
+            {/* ========================= */}
 
             <DashboardSummary
 
@@ -170,7 +188,9 @@ function App() {
 
             />
 
+            {/* ========================= */}
             {/* GRÁFICAS */}
+            {/* ========================= */}
 
             <ChartsSection
 
@@ -178,7 +198,9 @@ function App() {
 
             />
 
+            {/* ========================= */}
             {/* EXPORTAR */}
+            {/* ========================= */}
 
             <div className="flex justify-end">
 
@@ -196,11 +218,21 @@ function App() {
 
             </div>
 
+            {/* ========================= */}
             {/* TABLAS */}
+            {/* ========================= */}
 
             <TablesSection
 
-                records={filteredRecords}
+                records={records}
+
+                filteredRecords={filteredRecords}
+
+                filters={filters}
+
+                comparison={comparison}
+
+                setComparison={setComparison}
 
             />
 
